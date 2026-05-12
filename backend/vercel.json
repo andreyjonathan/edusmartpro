@@ -24,9 +24,10 @@
         }
     ],
     "env": {
+        "APP_KEY": "base64:o0leHGbXDtGxI4vLndwIMKJPWWF+fH7pq1hSHKuDQ6c=",
         "APP_STORAGE": "/tmp/storage",
         "APP_ENV": "production",
-        "APP_DEBUG": "false",
+        "APP_DEBUG": "true",
         "APP_URL": "https://edusmartpro.vercel.app",
         "DB_CONNECTION": "mysql",
         "DB_HOST": "[IP_ADDRESS]",

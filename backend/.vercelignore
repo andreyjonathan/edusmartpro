@@ -1,0 +1,12 @@
+/node_modules
+/vendor
+/tests
+/storage
+/.git
+/.github
+/.vscode
+/.idea
+.env
+.env.*
+phpunit.xml
+auth.json

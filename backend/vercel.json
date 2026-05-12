@@ -3,7 +3,7 @@
     "cleanUrls": true,
     "trailingSlash": false,
     "functions": {
-        "api/index.php": {
+        "index.php": {
             "runtime": "vercel-php@0.7.3"
         }
     },
@@ -13,7 +13,7 @@
         },
         {
             "src": "/(.*)",
-            "dest": "/api/index.php"
+            "dest": "/index.php"
         }
     ]
 }

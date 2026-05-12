@@ -15,4 +15,4 @@ foreach ($storageDirs as $dir) {
 }
 
 // Forward to Laravel's index.php
-require __DIR__ . '/public/index.php';
+require __DIR__ . '/../public/index.php';

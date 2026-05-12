@@ -16,9 +16,6 @@
             "dest": "/api/index.php"
         }
     ],
-    "public": true,
-    "outputDirectory": "public",
-    "buildCommand": "npm run build",
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "false",
@@ -28,6 +25,9 @@
         "DB_PORT": "3306",
         "DB_DATABASE": "edusmart_db",
         "DB_USERNAME": "edusmart_user",
-        "DB_PASSWORD": "edusmart_pwd123"
+        "DB_PASSWORD": "edusmart_pwd123",
+        "SESSION_DRIVER": "cookie",
+        "CACHE_STORE": "array",
+        "LOG_CHANNEL": "stderr"
     }
 }

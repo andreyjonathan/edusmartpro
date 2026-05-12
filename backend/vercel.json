@@ -15,5 +15,19 @@
             "src": "/(.*)",
             "dest": "/api/index.php"
         }
-    ]
+    ],
+    "public": true,
+    "outputDirectory": "public",
+    "buildCommand": "npm run build",
+    "env": {
+        "APP_ENV": "production",
+        "APP_DEBUG": "false",
+        "APP_URL": "https://edusmartpro.vercel.app",
+        "DB_CONNECTION": "mysql",
+        "DB_HOST": "[IP_ADDRESS]",
+        "DB_PORT": "3306",
+        "DB_DATABASE": "edusmart_db",
+        "DB_USERNAME": "edusmart_user",
+        "DB_PASSWORD": "edusmart_pwd123"
+    }
 }

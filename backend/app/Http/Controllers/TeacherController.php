@@ -26,7 +26,8 @@ class TeacherController extends Controller
     {
         return Inertia::render('Teachers/Index', [
             'teachers' => $this->teacherService->getTeachers($request->all()),
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search', 'status', 'subject']),
+            'subjects' => Teacher::distinct()->pluck('subject'),
         ]);
     }
 

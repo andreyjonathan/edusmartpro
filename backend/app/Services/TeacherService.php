@@ -23,6 +23,14 @@ class TeacherService
             });
         }
 
+        if (isset($filters['status']) && $filters['status'] !== '') {
+            $query->where('status', $filters['status']);
+        }
+
+        if (isset($filters['subject']) && $filters['subject'] !== '') {
+            $query->where('subject', $filters['subject']);
+        }
+
         return $query->latest()->paginate(10)->withQueryString();
     }
 

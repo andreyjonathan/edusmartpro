@@ -17,12 +17,20 @@ import debounce from 'lodash/debounce';
 const props = defineProps({
   subjects: Object,
   filters: Object,
+  groups: Array,
 });
 
 const search = ref(props.filters.search || '');
+const selectedGroup = ref(props.filters.group || '');
 
-watch(search, debounce((value) => {
-  router.get(route('subjects.index'), { search: value }, { preserveState: true, replace: true });
+watch([search, selectedGroup], debounce(() => {
+  router.get(route('subjects.index'), { 
+    search: search.value, 
+    group: selectedGroup.value 
+  }, { 
+    preserveState: true, 
+    replace: true 
+  });
 }, 500));
 
 const deleteSubject = (id) => {
@@ -73,10 +81,13 @@ const deleteSubject = (id) => {
             />
           </div>
           <div class="flex items-center gap-3 w-full md:w-auto">
-            <button class="flex-1 md:flex-none px-4 py-2.5 bg-white border border-slate-100 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
-              <Filter :size="18" />
-              Filters
-            </button>
+            <select 
+              v-model="selectedGroup"
+              class="bg-slate-50 border-none rounded-xl text-sm py-2.5 pl-4 pr-10 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+            >
+              <option value="">{{ lang === 'id' ? 'Semua Grup' : 'All Groups' }}</option>
+              <option v-for="g in groups" :key="g" :value="g">{{ g }}</option>
+            </select>
           </div>
         </div>
       </Card>

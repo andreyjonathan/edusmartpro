@@ -23,6 +23,10 @@ class SubjectService
             });
         }
 
+        if (isset($filters['group']) && $filters['group'] !== '') {
+            $query->where('group', $filters['group']);
+        }
+
         return $query->latest()->paginate(10)->withQueryString();
     }
 

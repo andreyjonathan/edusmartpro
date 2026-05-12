@@ -14,20 +14,33 @@ import {
 } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 import debounce from 'lodash/debounce';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t, lang } = useLanguage();
 
 const props = defineProps({
   employees: Object,
   filters: Object,
+  positions: Array,
 });
 
 const search = ref(props.filters.search || '');
+const status = ref(props.filters.status || '');
+const selectedPosition = ref(props.filters.position || '');
 
-watch(search, debounce((value) => {
-  router.get(route('employees.index'), { search: value }, { preserveState: true, replace: true });
+watch([search, status, selectedPosition], debounce(() => {
+  router.get(route('employees.index'), { 
+    search: search.value, 
+    status: status.value, 
+    position: selectedPosition.value 
+  }, { 
+    preserveState: true, 
+    replace: true 
+  });
 }, 500));
 
 const deleteEmployee = (id) => {
-  if (confirm('Are you sure you want to delete this employee?')) {
+  if (confirm(lang.value === 'id' ? 'Apakah Anda yakin ingin menghapus karyawan ini?' : 'Are you sure you want to delete this employee?')) {
     router.delete(route('employees.destroy', id));
   }
 };
@@ -41,8 +54,8 @@ const deleteEmployee = (id) => {
       <!-- Header Section -->
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Employees Management</h1>
-          <p class="text-slate-500 mt-1">Manage all administrative and support staff members.</p>
+          <h1 class="text-3xl font-bold text-slate-900 tracking-tight">{{ t.employees.title }}</h1>
+          <p class="text-slate-500 mt-1">{{ t.employees.subtitle }}</p>
         </div>
         <div class="flex items-center gap-3">
           <button class="px-5 py-2.5 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all shadow-sm flex items-center gap-2">
@@ -54,7 +67,7 @@ const deleteEmployee = (id) => {
             class="px-5 py-2.5 bg-indigo-600 rounded-2xl text-sm font-semibold text-white hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 flex items-center gap-2"
           >
             <UserPlus :size="18" />
-            Add New Employee
+            {{ t.employees.addEmployee }}
           </Link>
         </div>
       </div>
@@ -69,15 +82,26 @@ const deleteEmployee = (id) => {
             <input 
               v-model="search"
               type="text" 
-              placeholder="Search by name, NIK, or position..." 
+              :placeholder="t.employees.searchPlaceholder" 
               class="block w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-sm text-slate-900 focus:ring-4 focus:ring-indigo-50/50 focus:border-indigo-500 focus:bg-white transition-all outline-none"
             />
           </div>
           <div class="flex items-center gap-3 w-full md:w-auto">
-            <button class="flex-1 md:flex-none px-4 py-2.5 bg-white border border-slate-100 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
-              <Filter :size="18" />
-              Filters
-            </button>
+            <select 
+              v-model="selectedPosition"
+              class="bg-slate-50 border-none rounded-xl text-sm py-2.5 pl-4 pr-10 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+            >
+              <option value="">{{ lang === 'id' ? 'Semua Posisi' : 'All Positions' }}</option>
+              <option v-for="p in positions" :key="p" :value="p">{{ p }}</option>
+            </select>
+            <select 
+              v-model="status"
+              class="bg-slate-50 border-none rounded-xl text-sm py-2.5 pl-4 pr-10 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+            >
+              <option value="">{{ lang === 'id' ? 'Semua Status' : 'All Status' }}</option>
+              <option value="Active">{{ t.common.active }}</option>
+              <option value="Inactive">{{ t.common.inactive }}</option>
+            </select>
           </div>
         </div>
       </Card>
@@ -88,12 +112,12 @@ const deleteEmployee = (id) => {
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="bg-slate-50/50 border-b border-slate-100">
-                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Employee Details</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">{{ t.employees.title }}</th>
                 <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">NIK</th>
-                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Position</th>
-                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Gender</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">{{ lang === 'id' ? 'Jabatan' : 'Position' }}</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">{{ lang === 'id' ? 'Jenis Kelamin' : 'Gender' }}</th>
                 <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
-                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">{{ lang === 'id' ? 'Aksi' : 'Actions' }}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-50">
@@ -125,7 +149,7 @@ const deleteEmployee = (id) => {
                   >
                     <CheckCircle2 v-if="employee.status === 'Active'" :size="12" />
                     <XCircle v-else :size="12" />
-                    {{ employee.status }}
+                    {{ employee.status === 'Active' ? t.common.active : t.common.inactive }}
                   </div>
                 </td>
                 <td class="px-6 py-4 text-right">
@@ -147,7 +171,7 @@ const deleteEmployee = (id) => {
               </tr>
               <tr v-if="employees.data.length === 0">
                 <td colspan="6" class="px-6 py-12 text-center text-slate-500 font-medium">
-                    No employees found matching your search.
+                    {{ lang === 'id' ? 'Tidak ada karyawan yang ditemukan.' : 'No employees found matching your search.' }}
                 </td>
               </tr>
             </tbody>
@@ -157,7 +181,7 @@ const deleteEmployee = (id) => {
         <!-- Pagination -->
         <div class="px-6 py-4 bg-slate-50/30 border-t border-slate-100 flex items-center justify-between">
           <p class="text-xs font-medium text-slate-500">
-            Showing {{ employees.from || 0 }} to {{ employees.to || 0 }} of {{ employees.total }} employees
+            {{ t.common.showing }} {{ employees.from || 0 }} {{ t.common.to }} {{ employees.to || 0 }} {{ t.common.of }} {{ employees.total }} {{ t.common.records }}
           </p>
           <div class="flex items-center gap-2">
             <Link 

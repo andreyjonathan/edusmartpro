@@ -6,18 +6,19 @@ import { ChevronLeft } from 'lucide-vue-next';
 
 const props = defineProps({
   attendance: Object,
-  students: Array,
+  attendants: Array,
+  type: String,
 });
 </script>
 
 <template>
-  <Head :title="`Edit Attendance: ${attendance.student.name}`" />
+  <Head :title="`Edit Attendance: ${attendance.attendant.name}`" />
 
   <AuthenticatedLayout>
     <div class="max-w-5xl mx-auto space-y-8">
       <div class="flex flex-col gap-4">
         <Link 
-            :href="route('attendances.index')" 
+            :href="route('attendances.index', { type: props.type })" 
             class="inline-flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-indigo-600 transition-colors w-fit"
           >
             <ChevronLeft :size="18" />
@@ -27,7 +28,7 @@ const props = defineProps({
         <p class="text-slate-500">Update the attendance status or notes for this specific record.</p>
       </div>
 
-      <AttendanceForm :attendance="attendance" :students="students" :is-edit="true" />
+      <AttendanceForm :attendance="attendance" :attendants="attendants" :type="type" :is-edit="true" />
     </div>
   </AuthenticatedLayout>
 </template>

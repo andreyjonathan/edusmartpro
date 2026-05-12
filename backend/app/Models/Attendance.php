@@ -11,14 +11,18 @@ class Attendance extends Model
     use HasFactory;
 
     protected $fillable = [
-        'student_id',
+        'attendant_id',
+        'attendant_type',
         'date',
         'status',
         'notes',
     ];
 
-    public function student()
+    /**
+     * Get the parent attendant model (Student, Teacher, or Employee).
+     */
+    public function attendant()
     {
-        return $this->belongsTo(Student::class);
+        return $this->morphTo();
     }
 }

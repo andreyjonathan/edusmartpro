@@ -17,11 +17,17 @@ class EmployeeFactory extends Factory
      */
     public function definition(): array
     {
+        $gender = $this->faker->randomElement(['Male', 'Female']);
+        $positions = [
+            'Staf Administrasi', 'Pustakawan', 'Keamanan', 'Petugas Kebersihan', 
+            'Dukungan TI', 'Akuntan', 'Spesialis SDM', 'Resepsionis', 'Laboran'
+        ];
+
         return [
             'nik' => $this->faker->unique()->numerify('################'), // 16 digits
-            'name' => $this->faker->name(),
-            'position' => $this->faker->randomElement(['Administrative Staff', 'Librarian', 'Security', 'Janitor', 'IT Support', 'Accountant', 'HR Specialist']),
-            'gender' => $this->faker->randomElement(['Male', 'Female']),
+            'name' => $this->faker->name($gender === 'Male' ? 'male' : 'female'),
+            'position' => $this->faker->randomElement($positions),
+            'gender' => $gender,
             'status' => $this->faker->randomElement(['Active', 'Inactive']),
             'email' => $this->faker->unique()->safeEmail(),
             'phone' => $this->faker->phoneNumber(),

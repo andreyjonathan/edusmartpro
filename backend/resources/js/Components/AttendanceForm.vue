@@ -1,5 +1,6 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import Card from '@/Components/ui/Card.vue';
 import { 
   User, 
@@ -14,26 +15,33 @@ import {
   Thermometer
 } from 'lucide-vue-next';
 import { Link } from '@inertiajs/vue3';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t, lang } = useLanguage();
 
 const props = defineProps({
   attendance: {
     type: Object,
     default: () => ({
-      student_id: '',
+      attendant_id: '',
+      attendant_type: '',
       date: new Date().toISOString().split('T')[0],
       status: 'Present',
       notes: '',
     })
   },
-  students: Array,
+  attendants: Array,
+  type: String,
   isEdit: Boolean,
 });
 
 const form = useForm({
-  student_id: props.attendance.student_id,
+  attendant_id: props.attendance.attendant_id,
+  attendant_type: props.attendance.attendant_type || (props.type === 'teacher' ? 'App\\Models\\Teacher' : (props.type === 'employee' ? 'App\\Models\\Employee' : 'App\\Models\\Student')),
   date: props.attendance.date,
   status: props.attendance.status,
   notes: props.attendance.notes,
+  type: props.type // Pass the type parameter for redirect
 });
 
 const submit = () => {
@@ -45,11 +53,19 @@ const submit = () => {
 };
 
 const statuses = [
-  { value: 'Present', icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-50', border: 'border-emerald-100' },
-  { value: 'Absent', icon: XCircle, color: 'text-rose-500', bg: 'bg-rose-50', border: 'border-rose-100' },
-  { value: 'Late', icon: Clock, color: 'text-amber-500', bg: 'bg-amber-50', border: 'border-amber-100' },
-  { value: 'Sick', icon: Thermometer, color: 'text-blue-500', bg: 'bg-blue-50', border: 'border-blue-100' },
+  { value: 'Present', label: computed(() => t.value.common.present), icon: CheckCircle2, color: 'text-emerald-500', bg: 'bg-emerald-50', border: 'border-emerald-100' },
+  { value: 'Absent', label: computed(() => t.value.common.absent), icon: XCircle, color: 'text-rose-500', bg: 'bg-rose-50', border: 'border-rose-100' },
+  { value: 'Late', label: computed(() => t.value.common.late), icon: Clock, color: 'text-amber-500', bg: 'bg-amber-50', border: 'border-amber-100' },
+  { value: 'Sick', label: computed(() => t.value.common.sick), icon: Thermometer, color: 'text-blue-500', bg: 'bg-blue-50', border: 'border-blue-100' },
 ];
+
+const getLabel = () => {
+  switch (props.type) {
+    case 'teacher': return 'Teacher';
+    case 'employee': return 'Employee';
+    default: return 'Student';
+  }
+};
 </script>
 
 <template>
@@ -64,23 +80,23 @@ const statuses = [
         
         <Card class="p-6 space-y-6">
           <div class="space-y-2">
-            <label class="text-sm font-semibold text-slate-700 ml-1">Student</label>
+            <label class="text-sm font-semibold text-slate-700 ml-1">{{ getLabel() }}</label>
             <select
-                v-model="form.student_id"
+                v-model="form.attendant_id"
                 required
                 :disabled="isEdit"
                 class="block w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-slate-900 text-sm focus:ring-4 focus:ring-indigo-50/50 focus:border-indigo-500 transition-all outline-none disabled:bg-slate-50 disabled:text-slate-500"
             >
-                <option value="" disabled>Select Student</option>
-                <option v-for="student in students" :key="student.id" :value="student.id">
-                    {{ student.name }} ({{ student.nis }})
+                <option value="" disabled>Select {{ getLabel() }}</option>
+                <option v-for="attendant in attendants" :key="attendant.id" :value="attendant.id">
+                    {{ attendant.name }}
                 </option>
             </select>
-            <p v-if="form.errors.student_id" class="text-xs text-rose-500 font-bold ml-1">{{ form.errors.student_id }}</p>
+            <p v-if="form.errors.attendant_id" class="text-xs text-rose-500 font-bold ml-1">{{ form.errors.attendant_id }}</p>
           </div>
 
           <div class="space-y-2">
-            <label class="text-sm font-semibold text-slate-700 ml-1">Date</label>
+            <label class="text-sm font-semibold text-slate-700 ml-1">{{ t.attendance.date }}</label>
             <input
                 v-model="form.date"
                 type="date"
@@ -97,12 +113,12 @@ const statuses = [
       <div class="space-y-6">
         <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
           <CheckCircle2 :size="20" class="text-indigo-600" />
-          Status & Remarks
+          {{ t.attendance.statusRemarks }}
         </h3>
         
         <Card class="p-6 space-y-6">
           <div class="space-y-2">
-            <label class="text-sm font-semibold text-slate-700 ml-1">Status</label>
+            <label class="text-sm font-semibold text-slate-700 ml-1">{{ t.attendance.status }}</label>
             <div class="grid grid-cols-2 gap-3">
                 <button 
                     type="button"
@@ -116,18 +132,18 @@ const statuses = [
                     ]"
                 >
                     <component :is="s.icon" :size="20" />
-                    <span class="font-bold text-sm">{{ s.value }}</span>
+                    <span class="font-bold text-sm">{{ s.label }}</span>
                 </button>
             </div>
             <p v-if="form.errors.status" class="text-xs text-rose-500 font-bold ml-1">{{ form.errors.status }}</p>
           </div>
 
           <div class="space-y-2">
-            <label class="text-sm font-semibold text-slate-700 ml-1">Notes (Optional)</label>
+            <label class="text-sm font-semibold text-slate-700 ml-1">{{ t.attendance.notesOptional }}</label>
             <textarea
                 v-model="form.notes"
                 rows="3"
-                placeholder="e.g. Arrived 15 mins late due to traffic"
+                :placeholder="t.attendance.notesPlaceholder"
                 class="block w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-slate-900 text-sm focus:ring-4 focus:ring-indigo-50/50 focus:border-indigo-500 transition-all outline-none resize-none"
             ></textarea>
             <p v-if="form.errors.notes" class="text-xs text-rose-500 font-bold ml-1">{{ form.errors.notes }}</p>
@@ -139,10 +155,10 @@ const statuses = [
     <!-- Actions -->
     <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
       <Link 
-        :href="route('attendances.index')"
+        :href="route('attendances.index', { type: props.type })"
         class="px-6 py-3 bg-white border border-slate-200 text-slate-600 text-sm font-bold rounded-2xl hover:bg-slate-50 transition-all"
       >
-        Cancel
+        {{ t.attendance.cancel }}
       </Link>
       <button
         type="submit"
@@ -151,7 +167,7 @@ const statuses = [
       >
         <Loader2 v-if="form.processing" class="animate-spin" :size="18" />
         <Check v-else :size="18" />
-        {{ isEdit ? 'Update Record' : 'Record Attendance' }}
+        {{ isEdit ? t.attendance.updateBtn : t.attendance.recordBtn }}
       </button>
     </div>
   </form>

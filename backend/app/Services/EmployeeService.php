@@ -23,6 +23,14 @@ class EmployeeService
             });
         }
 
+        if (isset($filters['status']) && $filters['status'] !== '') {
+            $query->where('status', $filters['status']);
+        }
+
+        if (isset($filters['position']) && $filters['position'] !== '') {
+            $query->where('position', $filters['position']);
+        }
+
         return $query->latest()->paginate(10)->withQueryString();
     }
 

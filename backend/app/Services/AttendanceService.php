@@ -12,13 +12,25 @@ class AttendanceService
      */
     public function getAttendances(array $filters = []): LengthAwarePaginator
     {
-        $query = Attendance::with('student');
+        $query = Attendance::with('attendant');
+
+        if (isset($filters['type'])) {
+            $type = $filters['type'];
+            $modelClass = match ($type) {
+                'student' => \App\Models\Student::class,
+                'teacher' => \App\Models\Teacher::class,
+                'employee' => \App\Models\Employee::class,
+                default => null,
+            };
+            if ($modelClass) {
+                $query->where('attendant_type', $modelClass);
+            }
+        }
 
         if (isset($filters['search'])) {
             $search = $filters['search'];
-            $query->whereHas('student', function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('nis', 'like', "%{$search}%");
+            $query->whereHasMorph('attendant', '*', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%");
             });
         }
 
@@ -31,7 +43,7 @@ class AttendanceService
         }
 
         if (isset($filters['class'])) {
-            $query->whereHas('student', function ($q) use ($filters) {
+            $query->whereHasMorph('attendant', [\App\Models\Student::class], function ($q) use ($filters) {
                 $q->where('class', $filters['class']);
             });
         }
@@ -45,7 +57,11 @@ class AttendanceService
     public function createAttendance(array $data): Attendance
     {
         return Attendance::updateOrCreate(
-            ['student_id' => $data['student_id'], 'date' => $data['date']],
+            [
+                'attendant_id' => $data['attendant_id'],
+                'attendant_type' => $data['attendant_type'],
+                'date' => $data['date']
+            ],
             ['status' => $data['status'], 'notes' => $data['notes'] ?? null]
         );
     }

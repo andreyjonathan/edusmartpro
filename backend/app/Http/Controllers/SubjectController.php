@@ -26,7 +26,8 @@ class SubjectController extends Controller
     {
         return Inertia::render('Subjects/Index', [
             'subjects' => $this->subjectService->getSubjects($request->all()),
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search', 'group']),
+            'groups' => Subject::distinct()->whereNotNull('group')->pluck('group'),
         ]);
     }
 

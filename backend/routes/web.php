@@ -20,5 +20,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('employees', \App\Http\Controllers\EmployeeController::class);
     Route::resource('subjects', \App\Http\Controllers\SubjectController::class);
     Route::resource('attendances', \App\Http\Controllers\AttendanceController::class);
+    Route::resource('schedules', \App\Http\Controllers\ScheduleController::class);
+    Route::resource('classrooms', \App\Http\Controllers\ClassroomController::class);
+    Route::resource('payments', \App\Http\Controllers\PaymentController::class);
+    Route::get('settings', [\App\Http\Controllers\SettingController::class, 'index'])->name('settings.index');
+    Route::put('settings', [\App\Http\Controllers\SettingController::class, 'update'])->name('settings.update');
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
 });

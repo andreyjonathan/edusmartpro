@@ -40,7 +40,7 @@ const getStatusIcon = (status) => {
 </script>
 
 <template>
-  <Head :title="`Attendance Detail: ${attendance.student.name}`" />
+  <Head :title="`Attendance Detail: ${attendance.attendant.name}`" />
 
   <AuthenticatedLayout>
     <div class="max-w-4xl mx-auto space-y-8">
@@ -48,7 +48,7 @@ const getStatusIcon = (status) => {
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div class="flex flex-col gap-4">
           <Link 
-              :href="route('attendances.index')" 
+              :href="route('attendances.index', { type: attendance.attendant_type.split('\\').pop().toLowerCase() })" 
               class="inline-flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-indigo-600 transition-colors w-fit"
           >
               <ChevronLeft :size="18" />
@@ -56,11 +56,13 @@ const getStatusIcon = (status) => {
           </Link>
           <div class="flex items-center gap-6">
             <div class="w-20 h-20 rounded-3xl bg-slate-50 flex items-center justify-center text-slate-400 border-4 border-white shadow-lg overflow-hidden">
-                <img :src="`https://api.dicebear.com/7.x/avataaars/svg?seed=${attendance.student.name}`" :alt="attendance.student.name" />
+                <img :src="`https://api.dicebear.com/7.x/avataaars/svg?seed=${attendance.attendant.name}`" :alt="attendance.attendant.name" />
             </div>
             <div>
-              <h1 class="text-3xl font-bold text-slate-900 tracking-tight">{{ attendance.student.name }}</h1>
-              <p class="text-slate-500 font-medium">Student ID: {{ attendance.student.nis }}</p>
+              <h1 class="text-3xl font-bold text-slate-900 tracking-tight">{{ attendance.attendant.name }}</h1>
+              <p v-if="attendance.attendant.nis" class="text-slate-500 font-medium">Student ID: {{ attendance.attendant.nis }}</p>
+              <p v-if="attendance.attendant.nip" class="text-slate-500 font-medium">Teacher ID: {{ attendance.attendant.nip }}</p>
+              <p v-if="attendance.attendant.nik" class="text-slate-500 font-medium">Employee ID: {{ attendance.attendant.nik }}</p>
             </div>
           </div>
         </div>

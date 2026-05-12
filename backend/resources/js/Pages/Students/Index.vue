@@ -18,20 +18,33 @@ import {
 } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 import debounce from 'lodash/debounce';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t, lang } = useLanguage();
 
 const props = defineProps({
   students: Object,
   filters: Object,
+  classes: Array,
 });
 
 const search = ref(props.filters.search || '');
+const status = ref(props.filters.status || '');
+const selectedClass = ref(props.filters.class || '');
 
-watch(search, debounce((value) => {
-  router.get(route('students.index'), { search: value }, { preserveState: true, replace: true });
+watch([search, status, selectedClass], debounce(() => {
+  router.get(route('students.index'), { 
+    search: search.value, 
+    status: status.value, 
+    class: selectedClass.value 
+  }, { 
+    preserveState: true, 
+    replace: true 
+  });
 }, 500));
 
 const deleteStudent = (id) => {
-  if (confirm('Are you sure you want to delete this student?')) {
+  if (confirm(lang.value === 'id' ? 'Apakah Anda yakin ingin menghapus siswa ini?' : 'Are you sure you want to delete this student?')) {
     router.delete(route('students.destroy', id));
   }
 };
@@ -45,8 +58,8 @@ const deleteStudent = (id) => {
       <!-- Header Section -->
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Students Management</h1>
-          <p class="text-slate-500 mt-1">Manage and monitor all student records in your institution.</p>
+          <h1 class="text-3xl font-bold text-slate-900 tracking-tight">{{ t.students.title }}</h1>
+          <p class="text-slate-500 mt-1">{{ t.students.subtitle }}</p>
         </div>
         <div class="flex items-center gap-3">
           <button class="px-5 py-2.5 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all shadow-sm flex items-center gap-2">
@@ -58,7 +71,7 @@ const deleteStudent = (id) => {
             class="px-5 py-2.5 bg-indigo-600 rounded-2xl text-sm font-semibold text-white hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 flex items-center gap-2"
           >
             <UserPlus :size="18" />
-            Add New Student
+            {{ t.students.addStudent }}
           </Link>
         </div>
       </div>
@@ -73,15 +86,26 @@ const deleteStudent = (id) => {
             <input 
               v-model="search"
               type="text" 
-              placeholder="Search by name or NIS..." 
+              :placeholder="t.students.searchPlaceholder" 
               class="block w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-sm text-slate-900 focus:ring-4 focus:ring-indigo-50/50 focus:border-indigo-500 focus:bg-white transition-all outline-none"
             />
           </div>
           <div class="flex items-center gap-3 w-full md:w-auto">
-            <button class="flex-1 md:flex-none px-4 py-2.5 bg-white border border-slate-100 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
-              <Filter :size="18" />
-              Filters
-            </button>
+            <select 
+              v-model="selectedClass"
+              class="bg-slate-50 border-none rounded-xl text-sm py-2.5 pl-4 pr-10 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+            >
+              <option value="">{{ t.students.allClasses }}</option>
+              <option v-for="c in classes" :key="c" :value="c">{{ c }}</option>
+            </select>
+            <select 
+              v-model="status"
+              class="bg-slate-50 border-none rounded-xl text-sm py-2.5 pl-4 pr-10 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+            >
+              <option value="">{{ t.students.allStatus }}</option>
+              <option value="Active">{{ t.common.active }}</option>
+              <option value="Inactive">{{ t.common.inactive }}</option>
+            </select>
           </div>
         </div>
       </Card>
@@ -92,12 +116,12 @@ const deleteStudent = (id) => {
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="bg-slate-50/50 border-b border-slate-100">
-                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Student Details</th>
-                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">NIS</th>
-                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Class</th>
-                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Gender</th>
-                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
-                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">{{ t.students.name }}</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">{{ t.students.nis }}</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">{{ t.students.class }}</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">{{ t.students.gender }}</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">{{ t.students.status }}</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">{{ lang === 'id' ? 'Aksi' : 'Actions' }}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-50">
@@ -129,7 +153,7 @@ const deleteStudent = (id) => {
                   >
                     <CheckCircle2 v-if="student.status === 'Active'" :size="12" />
                     <XCircle v-else :size="12" />
-                    {{ student.status }}
+                    {{ student.status === 'Active' ? t.common.active : t.common.inactive }}
                   </div>
                 </td>
                 <td class="px-6 py-4 text-right">
@@ -151,7 +175,7 @@ const deleteStudent = (id) => {
               </tr>
               <tr v-if="students.data.length === 0">
                 <td colspan="6" class="px-6 py-12 text-center text-slate-500 font-medium">
-                    No students found matching your search.
+                    {{ t.students.noRecords }}
                 </td>
               </tr>
             </tbody>
@@ -161,7 +185,7 @@ const deleteStudent = (id) => {
         <!-- Pagination -->
         <div class="px-6 py-4 bg-slate-50/30 border-t border-slate-100 flex items-center justify-between">
           <p class="text-xs font-medium text-slate-500">
-            Showing {{ students.from || 0 }} to {{ students.to || 0 }} of {{ students.total }} students
+            {{ t.common.showing }} {{ students.from || 0 }} {{ t.common.to }} {{ students.to || 0 }} {{ t.common.of }} {{ students.total }} {{ t.common.records }}
           </p>
           <div class="flex items-center gap-2">
             <Link 

@@ -26,7 +26,8 @@ class EmployeeController extends Controller
     {
         return Inertia::render('Employees/Index', [
             'employees' => $this->employeeService->getEmployees($request->all()),
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search', 'status', 'position']),
+            'positions' => Employee::distinct()->pluck('position'),
         ]);
     }
 

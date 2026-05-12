@@ -16,11 +16,13 @@ class StudentFactory extends Factory
      */
     public function definition(): array
     {
+        $gender = $this->faker->randomElement(['Male', 'Female']);
+        
         return [
             'nis' => $this->faker->unique()->numerify('#####'),
-            'name' => $this->faker->name(),
+            'name' => $this->faker->name($gender === 'Male' ? 'male' : 'female'),
             'class' => $this->faker->randomElement(['10-A', '10-B', '11-A', '11-B', '12-A', '12-B']),
-            'gender' => $this->faker->randomElement(['Male', 'Female']),
+            'gender' => $gender,
             'status' => $this->faker->randomElement(['Active', 'Inactive']),
             'address' => $this->faker->address(),
             'phone' => $this->faker->phoneNumber(),

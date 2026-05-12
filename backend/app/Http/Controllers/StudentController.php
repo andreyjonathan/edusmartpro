@@ -8,19 +8,19 @@ use Inertia\Inertia;
 
 class StudentController extends Controller
 {
+    protected $studentService;
+
+    public function __construct(\App\Services\StudentService $studentService)
+    {
+        $this->studentService = $studentService;
+    }
+
     public function index(Request $request)
     {
-        $query = Student::query();
-
-        if ($request->search) {
-            $query->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('nis', 'like', '%' . $request->search . '%')
-                  ->orWhere('class', 'like', '%' . $request->search . '%');
-        }
-
         return Inertia::render('Students/Index', [
-            'students' => $query->latest()->paginate(10)->withQueryString(),
-            'filters' => $request->only(['search'])
+            'students' => $this->studentService->getStudents($request->all()),
+            'filters' => $request->only(['search', 'status', 'class']),
+            'classes' => Student::distinct()->pluck('class'),
         ]);
     }
 

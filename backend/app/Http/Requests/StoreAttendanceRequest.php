@@ -23,7 +23,8 @@ class StoreAttendanceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'student_id' => 'required|exists:students,id',
+            'attendant_id' => 'required|integer',
+            'attendant_type' => 'required|string|in:App\Models\Student,App\Models\Teacher,App\Models\Employee',
             'date' => 'required|date',
             'status' => 'required|in:Present,Absent,Late,Sick',
             'notes' => 'nullable|string',

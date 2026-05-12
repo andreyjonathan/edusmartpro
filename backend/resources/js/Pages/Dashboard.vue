@@ -2,6 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Card from '@/Components/ui/Card.vue';
 import { Head } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -12,17 +13,20 @@ import {
   GraduationCap,
   Briefcase
 } from 'lucide-vue-next';
+import { useLanguage } from '@/composables/useLanguage';
+
+const { t, lang } = useLanguage();
 
 defineProps({
   stats: Array,
 });
 
-const quickActions = [
-  { name: 'Add New Student', icon: UserCheck, color: 'bg-emerald-500', shadow: 'shadow-emerald-200' },
-  { name: 'Schedule Exam', icon: CalendarDays, color: 'bg-blue-500', shadow: 'shadow-blue-200' },
-  { name: 'Assign Teacher', icon: Briefcase, color: 'bg-purple-500', shadow: 'shadow-purple-200' },
-  { name: 'Generate Report', icon: GraduationCap, color: 'bg-orange-500', shadow: 'shadow-orange-200' },
-];
+const quickActions = computed(() => [
+  { name: lang.value === 'id' ? 'Tambah Siswa Baru' : 'Add New Student', icon: UserCheck, color: 'bg-emerald-500', shadow: 'shadow-emerald-200' },
+  { name: lang.value === 'id' ? 'Jadwal Ujian' : 'Schedule Exam', icon: CalendarDays, color: 'bg-blue-500', shadow: 'shadow-blue-200' },
+  { name: lang.value === 'id' ? 'Tugaskan Guru' : 'Assign Teacher', icon: Briefcase, color: 'bg-purple-500', shadow: 'shadow-purple-200' },
+  { name: lang.value === 'id' ? 'Buat Laporan' : 'Generate Report', icon: GraduationCap, color: 'bg-orange-500', shadow: 'shadow-orange-200' },
+]);
 
 const recentActivities = [
   { user: 'Budi Santoso', action: 'enrolled in Class 10-A', time: '2 minutes ago', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Budi' },
@@ -41,19 +45,19 @@ const recentActivities = [
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 class="text-3xl font-bold text-slate-900 tracking-tight" v-if="$page.props.auth.user">
-            Good morning, {{ $page.props.auth.user.name.split(' ')[0] }}! 👋
+            {{ lang === 'id' ? 'Selamat pagi' : 'Good morning' }}, {{ $page.props.auth.user.name.split(' ')[0] }}! 👋
           </h1>
           <h1 class="text-3xl font-bold text-slate-900 tracking-tight" v-else>
-            Good morning! 👋
+            {{ lang === 'id' ? 'Selamat pagi!' : 'Good morning!' }} 👋
           </h1>
-          <p class="text-slate-500 mt-1">Here's what's happening in your school today.</p>
+          <p class="text-slate-500 mt-1">{{ t.dashboard.subtitle }}</p>
         </div>
         <div class="flex items-center gap-3">
           <button class="px-5 py-2.5 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all shadow-sm">
-            Download Report
+            {{ lang === 'id' ? 'Unduh Laporan' : 'Download Report' }}
           </button>
           <button class="px-5 py-2.5 bg-indigo-600 rounded-2xl text-sm font-semibold text-white hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200">
-            Create New
+            {{ lang === 'id' ? 'Buat Baru' : 'Create New' }}
           </button>
         </div>
       </div>
@@ -96,8 +100,8 @@ const recentActivities = [
           <!-- Quick Actions -->
           <div>
             <div class="flex items-center justify-between mb-4">
-              <h2 class="text-xl font-bold text-slate-900">Quick Actions</h2>
-              <button class="text-sm font-semibold text-indigo-600 hover:text-indigo-700">View all</button>
+              <h2 class="text-xl font-bold text-slate-900">{{ lang === 'id' ? 'Aksi Cepat' : 'Quick Actions' }}</h2>
+              <button class="text-sm font-semibold text-indigo-600 hover:text-indigo-700">{{ lang === 'id' ? 'Lihat semua' : 'View all' }}</button>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <button 
@@ -117,12 +121,12 @@ const recentActivities = [
           <Card class="p-8">
             <div class="flex items-center justify-between mb-8">
               <div>
-                <h2 class="text-xl font-bold text-slate-900">Student Performance</h2>
-                <p class="text-sm text-slate-500 mt-1">Academic trends across all departments</p>
+                <h2 class="text-xl font-bold text-slate-900">{{ lang === 'id' ? 'Performa Siswa' : 'Student Performance' }}</h2>
+                <p class="text-sm text-slate-500 mt-1">{{ lang === 'id' ? 'Tren akademik di semua jurusan' : 'Academic trends across all departments' }}</p>
               </div>
               <select class="bg-slate-50 border-slate-200 rounded-xl text-sm font-semibold text-slate-600 focus:ring-indigo-500 focus:border-indigo-500">
-                <option>Last 6 months</option>
-                <option>Last year</option>
+                <option>{{ lang === 'id' ? '6 bulan terakhir' : 'Last 6 months' }}</option>
+                <option>{{ lang === 'id' ? 'Tahun lalu' : 'Last year' }}</option>
               </select>
             </div>
             <div class="h-64 flex items-end justify-between gap-2 px-4">
@@ -143,7 +147,7 @@ const recentActivities = [
           <!-- Recent Activity -->
           <Card class="p-6">
             <div class="flex items-center justify-between mb-6">
-              <h2 class="text-xl font-bold text-slate-900">Recent Activity</h2>
+              <h2 class="text-xl font-bold text-slate-900">{{ lang === 'id' ? 'Aktivitas Terbaru' : 'Recent Activity' }}</h2>
               <button class="p-1.5 rounded-lg hover:bg-slate-50 text-slate-400"><MoreVertical :size="20" /></button>
             </div>
             <div class="space-y-6">
@@ -161,22 +165,22 @@ const recentActivities = [
               </div>
             </div>
             <button class="w-full mt-8 py-3 rounded-2xl bg-slate-50 text-slate-600 text-sm font-bold hover:bg-slate-100 transition-all">
-              View All Logs
+              {{ lang === 'id' ? 'Lihat Semua Log' : 'View All Logs' }}
             </button>
           </Card>
 
           <!-- Announcements Card -->
           <Card class="p-6 bg-gradient-to-br from-indigo-600 to-violet-700 text-white border-none shadow-indigo-200">
-            <h2 class="text-lg font-bold mb-2">School Announcement</h2>
+            <h2 class="text-lg font-bold mb-2">{{ lang === 'id' ? 'Pengumuman Sekolah' : 'School Announcement' }}</h2>
             <p class="text-indigo-100 text-sm leading-relaxed mb-6">
-              Annual sports meeting scheduled for next Monday. All department heads must submit participant lists by Friday.
+              {{ lang === 'id' ? 'Rapat olahraga tahunan dijadwalkan Senin depan. Semua kepala departemen harus menyerahkan daftar peserta paling lambat hari Jumat.' : 'Annual sports meeting scheduled for next Monday. All department heads must submit participant lists by Friday.' }}
             </p>
             <div class="flex items-center justify-between">
               <div class="flex -space-x-2">
                 <img v-for="i in 3" :key="i" :src="`https://api.dicebear.com/7.x/avataaars/svg?seed=Teacher${i}`" class="w-8 h-8 rounded-full border-2 border-indigo-500" />
                 <div class="w-8 h-8 rounded-full bg-indigo-400 border-2 border-indigo-500 flex items-center justify-center text-[10px] font-bold">+12</div>
               </div>
-              <button class="text-xs font-bold bg-white/20 hover:bg-white/30 px-4 py-2 rounded-xl transition-all">Details</button>
+              <button class="text-xs font-bold bg-white/20 hover:bg-white/30 px-4 py-2 rounded-xl transition-all">{{ lang === 'id' ? 'Detail' : 'Details' }}</button>
             </div>
           </Card>
         </div>

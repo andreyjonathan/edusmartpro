@@ -2,6 +2,7 @@
 /vendor
 /tests
 /storage
+/bootstrap/cache
 /.git
 /.github
 /.vscode

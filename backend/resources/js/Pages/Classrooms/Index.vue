@@ -15,6 +15,8 @@ import {
   GraduationCap
 } from 'lucide-vue-next';
 import { useLanguage } from '@/composables/useLanguage';
+import { debounce } from 'lodash';
+
 
 const { t, lang } = useLanguage();
 

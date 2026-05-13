@@ -10,3 +10,8 @@
 .env.*
 phpunit.xml
 auth.json
+*.md
+.editorconfig
+.gitattributes
+/tests
+/tests_output

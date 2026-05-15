@@ -11,6 +11,7 @@ class Teacher extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'nip',
         'name',
         'subject',
@@ -20,4 +21,9 @@ class Teacher extends Model
         'phone',
         'address',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

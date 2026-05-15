@@ -9,7 +9,8 @@ import {
   Phone,
   Check,
   X,
-  Loader2
+  Loader2,
+  Users
 } from 'lucide-vue-next';
 
 const props = defineProps({
@@ -23,6 +24,9 @@ const props = defineProps({
       status: 'Active',
       address: '',
       phone: '',
+      parent_name: '',
+      parent_email: '',
+      parent_phone: '',
     })
   },
   isEdit: Boolean,
@@ -36,6 +40,9 @@ const form = useForm({
   status: props.student.status,
   address: props.student.address,
   phone: props.student.phone,
+  parent_name: props.student.parent_name || '',
+  parent_email: props.student.parent_email || '',
+  parent_phone: props.student.parent_phone || '',
 });
 
 const submit = () => {
@@ -161,6 +168,54 @@ const submit = () => {
                 class="block w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-slate-900 text-sm focus:ring-4 focus:ring-indigo-50/50 focus:border-indigo-500 transition-all outline-none resize-none"
             ></textarea>
           </div>
+        </Card>
+      </div>
+
+      <!-- Parent / Guardian Information -->
+      <div class="space-y-6 lg:col-span-2">
+        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <Users :size="20" class="text-indigo-600" />
+          Parent / Guardian Information
+        </h3>
+        
+        <Card class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="space-y-2">
+                    <label class="text-sm font-semibold text-slate-700 ml-1">Parent Name</label>
+                    <input
+                        v-model="form.parent_name"
+                        type="text"
+                        required
+                        placeholder="Full name of parent/guardian"
+                        class="block w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-slate-900 text-sm focus:ring-4 focus:ring-indigo-50/50 focus:border-indigo-500 transition-all outline-none"
+                    />
+                    <p v-if="form.errors.parent_name" class="text-xs text-rose-500 font-bold ml-1">{{ form.errors.parent_name }}</p>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-sm font-semibold text-slate-700 ml-1">Parent Email</label>
+                    <input
+                        v-model="form.parent_email"
+                        type="email"
+                        required
+                        placeholder="email@example.com"
+                        class="block w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-slate-900 text-sm focus:ring-4 focus:ring-indigo-50/50 focus:border-indigo-500 transition-all outline-none"
+                    />
+                    <p v-if="form.errors.parent_email" class="text-xs text-rose-500 font-bold ml-1">{{ form.errors.parent_email }}</p>
+                    <p class="text-[10px] text-slate-400 ml-1 italic">* This will be used as the parent's login account</p>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-sm font-semibold text-slate-700 ml-1">Parent Phone</label>
+                    <input
+                        v-model="form.parent_phone"
+                        type="text"
+                        placeholder="e.g. +62 812..."
+                        class="block w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-slate-900 text-sm focus:ring-4 focus:ring-indigo-50/50 focus:border-indigo-500 transition-all outline-none"
+                    />
+                    <p v-if="form.errors.parent_phone" class="text-xs text-rose-500 font-bold ml-1">{{ form.errors.parent_phone }}</p>
+                </div>
+            </div>
         </Card>
       </div>
     </div>

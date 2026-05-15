@@ -39,11 +39,36 @@ class StudentController extends Controller
             'status' => 'required|in:Active,Inactive',
             'address' => 'nullable|string',
             'phone' => 'nullable|string',
+            'parent_name' => 'required|string|max:255',
+            'parent_email' => 'required|email|unique:users,email',
+            'parent_phone' => 'nullable|string',
         ]);
 
-        Student::create($validated);
+        // 1. Create User for Parent
+        $parentUser = \App\Models\User::create([
+            'name' => $validated['parent_name'],
+            'email' => $validated['parent_email'],
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+        ]);
+        $parentUser->assignRole('parent');
 
-        return redirect()->route('students.index')->with('message', 'Student created successfully.');
+        // 2. Create User for Student (Optional but good for system access)
+        $studentUser = \App\Models\User::create([
+            'name' => $validated['name'],
+            'email' => $validated['nis'] . '@student.edusmart.com', // Unique placeholder email
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+        ]);
+        $studentUser->assignRole('student');
+
+        // 3. Create Student and link to Users
+        $studentData = array_merge($validated, [
+            'user_id' => $studentUser->id,
+            'parent_user_id' => $parentUser->id,
+        ]);
+
+        Student::create($studentData);
+
+        return redirect()->route('students.index')->with('message', 'Student and Parent account created successfully.');
     }
 
     public function edit(Student $student)
@@ -63,7 +88,25 @@ class StudentController extends Controller
             'status' => 'required|in:Active,Inactive',
             'address' => 'nullable|string',
             'phone' => 'nullable|string',
+            'parent_name' => 'required|string|max:255',
+            'parent_email' => 'required|email|unique:users,email,' . ($student->parent_user_id ?? 0),
+            'parent_phone' => 'nullable|string',
         ]);
+
+        // Sync Student User
+        if ($student->user_id) {
+            \App\Models\User::where('id', $student->user_id)->update([
+                'name' => $validated['name'],
+            ]);
+        }
+
+        // Sync Parent User
+        if ($student->parent_user_id) {
+            \App\Models\User::where('id', $student->parent_user_id)->update([
+                'name' => $validated['parent_name'],
+                'email' => $validated['parent_email'],
+            ]);
+        }
 
         $student->update($validated);
 

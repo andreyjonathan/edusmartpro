@@ -26,6 +26,11 @@ class SubjectSeeder extends Seeder
             ['name' => 'Physical Education', 'short_name' => 'PE', 'code' => 'PE101', 'group' => 'Elective'],
         ];
 
-        Subject::insert($subjects);
+        foreach ($subjects as $subject) {
+            Subject::updateOrCreate(
+                ['code' => $subject['code']],
+                $subject
+            );
+        }
     }
 }

@@ -26,6 +26,9 @@ class StudentFactory extends Factory
             'status' => $this->faker->randomElement(['Active', 'Inactive']),
             'address' => $this->faker->address(),
             'phone' => $this->faker->phoneNumber(),
+            'parent_name' => $this->faker->name(),
+            'parent_email' => $this->faker->unique()->safeEmail(),
+            'parent_phone' => $this->faker->phoneNumber(),
         ];
     }
 }

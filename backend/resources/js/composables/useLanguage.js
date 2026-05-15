@@ -24,6 +24,8 @@ const translations = {
       academic: 'Academic',
       application: 'Application',
       signOut: 'Sign Out',
+      users: 'Users',
+      rolesPermissions: 'Roles & Permissions',
     },
     // Header
     header: {
@@ -143,7 +145,15 @@ const translations = {
       view: 'View',
       student: 'Student',
       teacher: 'Teacher',
-      employee: 'Employee',
+    },
+    // Users
+    users: {
+      title: 'User Management',
+      subtitle: 'Manage system users and their access levels.',
+      rolesTitle: 'Roles & Permissions',
+      rolesSubtitle: 'Define what different user roles can do in the system.',
+      addUser: 'Add User',
+      editUser: 'Edit User',
     },
   },
 
@@ -167,6 +177,8 @@ const translations = {
       academic: 'Akademik',
       application: 'Aplikasi',
       signOut: 'Keluar',
+      users: 'Pengguna',
+      rolesPermissions: 'Peran & Izin',
     },
     // Header
     header: {
@@ -287,6 +299,15 @@ const translations = {
       student: 'Siswa',
       teacher: 'Guru',
       employee: 'Karyawan',
+    },
+    // Users
+    users: {
+      title: 'Manajemen Pengguna',
+      subtitle: 'Kelola pengguna sistem dan tingkat akses mereka.',
+      rolesTitle: 'Peran & Izin',
+      rolesSubtitle: 'Tentukan apa yang dapat dilakukan oleh berbagai peran pengguna dalam sistem.',
+      addUser: 'Tambah Pengguna',
+      editUser: 'Edit Pengguna',
     },
   },
 };

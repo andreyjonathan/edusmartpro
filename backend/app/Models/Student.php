@@ -10,6 +10,7 @@ class Student extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'nis',
         'name',
         'class',
@@ -17,5 +18,19 @@ class Student extends Model
         'status',
         'address',
         'phone',
+        'parent_name',
+        'parent_email',
+        'parent_phone',
+        'parent_user_id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(User::class, 'parent_user_id');
+    }
 }

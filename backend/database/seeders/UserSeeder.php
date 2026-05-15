@@ -10,12 +10,13 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        User::updateOrCreate(
+        $admin = User::updateOrCreate(
             ['email' => 'admin@edusmart.com'],
             [
                 'name' => 'Admin Sekolah',
                 'password' => Hash::make('password'),
             ]
         );
+        $admin->assignRole('admin');
     }
 }

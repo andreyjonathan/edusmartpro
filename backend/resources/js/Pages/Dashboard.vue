@@ -153,7 +153,7 @@ const recentActivities = [
             <div class="space-y-6">
               <div v-for="(activity, index) in recentActivities" :key="index" class="flex gap-4 relative">
                 <div v-if="index !== recentActivities.length - 1" class="absolute left-5 top-10 bottom-[-24px] w-0.5 bg-slate-100"></div>
-                <div class="w-10 h-10 rounded-full border-2 border-white shadow-sm flex-shrink-0 z-10 overflow-hidden bg-slate-100">
+                <div class="w-10 h-10 rounded-full border-2 border-white shadow-sm shrink-0 z-10 overflow-hidden bg-slate-100">
                   <img :src="activity.avatar" :alt="activity.user" />
                 </div>
                 <div class="flex-1">
@@ -170,7 +170,7 @@ const recentActivities = [
           </Card>
 
           <!-- Announcements Card -->
-          <Card class="p-6 bg-gradient-to-br from-indigo-600 to-violet-700 text-white border-none shadow-indigo-200">
+          <Card class="p-6 bg-linear-to-br from-indigo-600 to-violet-700 text-white border-none shadow-indigo-200">
             <h2 class="text-lg font-bold mb-2">{{ lang === 'id' ? 'Pengumuman Sekolah' : 'School Announcement' }}</h2>
             <p class="text-indigo-100 text-sm leading-relaxed mb-6">
               {{ lang === 'id' ? 'Rapat olahraga tahunan dijadwalkan Senin depan. Semua kepala departemen harus menyerahkan daftar peserta paling lambat hari Jumat.' : 'Annual sports meeting scheduled for next Monday. All department heads must submit participant lists by Friday.' }}

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { Link, Head } from '@inertiajs/vue3';
+import { Link, Head, usePage } from '@inertiajs/vue3';
 import { 
   LayoutDashboard, 
   Users, 
@@ -34,36 +34,116 @@ const toggleMenu = (name) => {
   }
 };
 
-const navItems = computed(() => [
-  { name: t.value.nav.dashboard, icon: LayoutDashboard, href: route('dashboard'), active: route().current('dashboard') },
-  { name: t.value.nav.students, icon: Users, href: route('students.index'), active: route().current('students.*') },
-  { name: t.value.nav.teachers, icon: GraduationCap, href: route('teachers.index'), active: route().current('teachers.*') },
-  { name: t.value.nav.employees, icon: Users, href: route('employees.index'), active: route().current('employees.*') },
-  { name: t.value.nav.classrooms, icon: Layout, href: route('classrooms.index'), active: route().current('classrooms.*') },
-  { name: t.value.nav.subjects, icon: BookOpen, href: route('subjects.index'), active: route().current('subjects.*') },
-  { 
-    name: t.value.nav.attendance, 
-    icon: ClipboardCheck, 
-    active: route().current('attendances.*'),
-    children: [
-      { name: t.value.nav.studentAttendance, href: route('attendances.index', { type: 'student' }), active: route().current('attendances.*') && (route().params.type === 'student' || !route().params.type) },
-      { name: t.value.nav.teacherAttendance, href: route('attendances.index', { type: 'teacher' }), active: route().current('attendances.*') && route().params.type === 'teacher' },
-      { name: t.value.nav.employeeAttendance, href: route('attendances.index', { type: 'employee' }), active: route().current('attendances.*') && route().params.type === 'employee' },
-    ]
-  },
-  { name: t.value.nav.schedule, icon: Calendar, href: route('schedules.index'), active: route().current('schedules.*') },
-  { name: t.value.nav.payments, icon: CreditCard, href: route('payments.index'), active: route().current('payments.*') },
-  { 
-    name: t.value.nav.settings, 
-    icon: Settings, 
-    active: route().current('settings.*'),
-    children: [
-      { name: t.value.nav.schoolProfile, href: route('settings.index', { tab: 'school' }), active: route().current('settings.*') && (route().params.tab === 'school' || !route().params.tab) },
-      { name: t.value.nav.academic, href: route('settings.index', { tab: 'academic' }), active: route().current('settings.*') && route().params.tab === 'academic' },
-      { name: t.value.nav.application, href: route('settings.index', { tab: 'app' }), active: route().current('settings.*') && route().params.tab === 'app' },
-    ]
-  },
-]);
+const user = computed(() => usePage().props.auth.user);
+
+const can = (permission) => {
+  if (!user.value) return false;
+  // Super Admin can see everything
+  if (user.value.roles.includes('admin')) return true;
+  return user.value.permissions.includes(permission);
+};
+
+const navItems = computed(() => {
+  const items = [
+    { 
+      name: t.value.nav.dashboard, 
+      icon: LayoutDashboard, 
+      href: route('dashboard'), 
+      active: route().current('dashboard'),
+      show: true 
+    },
+    { 
+      name: t.value.nav.students, 
+      icon: Users, 
+      href: route('students.index'), 
+      active: route().current('students.*'),
+      show: can('view students')
+    },
+    { 
+      name: t.value.nav.teachers, 
+      icon: GraduationCap, 
+      href: route('teachers.index'), 
+      active: route().current('teachers.*'),
+      show: can('view teachers')
+    },
+    { 
+      name: t.value.nav.employees, 
+      icon: Users, 
+      href: route('employees.index'), 
+      active: route().current('employees.*'),
+      show: can('view employees')
+    },
+    { 
+      name: t.value.nav.classrooms, 
+      icon: Layout, 
+      href: route('classrooms.index'), 
+      active: route().current('classrooms.*'),
+      show: can('view classrooms')
+    },
+    { 
+      name: t.value.nav.subjects, 
+      icon: BookOpen, 
+      href: route('subjects.index'), 
+      active: route().current('subjects.*'),
+      show: can('view subjects')
+    },
+    { 
+      name: t.value.nav.attendance, 
+      icon: ClipboardCheck, 
+      active: route().current('attendances.*'),
+      show: can('view attendance'),
+      children: [
+        { name: t.value.nav.studentAttendance, href: route('attendances.index', { type: 'student' }), active: route().current('attendances.*') && (route().params.type === 'student' || !route().params.type), show: true },
+        { name: t.value.nav.teacherAttendance, href: route('attendances.index', { type: 'teacher' }), active: route().current('attendances.*') && route().params.type === 'teacher', show: can('manage attendance') },
+        { name: t.value.nav.employeeAttendance, href: route('attendances.index', { type: 'employee' }), active: route().current('attendances.*') && route().params.type === 'employee', show: can('manage attendance') },
+      ]
+    },
+    { 
+      name: t.value.nav.schedule, 
+      icon: Calendar, 
+      href: route('schedules.index'), 
+      active: route().current('schedules.*'),
+      show: can('view schedules')
+    },
+    { 
+      name: t.value.nav.users, 
+      icon: Users, 
+      active: route().current('users.*') || route().current('roles.*'),
+      show: user.value.roles.includes('admin'),
+      children: [
+        { name: t.value.nav.users, href: route('users.index'), active: route().current('users.*'), show: true },
+        { name: t.value.nav.rolesPermissions, href: route('roles.index'), active: route().current('roles.*'), show: true },
+      ]
+    },
+    { 
+      name: t.value.nav.payments, 
+      icon: CreditCard, 
+      href: route('payments.index'), 
+      active: route().current('payments.*'),
+      show: can('view payments')
+    },
+    { 
+      name: t.value.nav.settings, 
+      icon: Settings, 
+      active: route().current('settings.*'),
+      show: can('manage settings'),
+      children: [
+        { name: t.value.nav.schoolProfile, href: route('settings.index', { tab: 'school' }), active: route().current('settings.*') && (route().params.tab === 'school' || !route().params.tab), show: true },
+        { name: t.value.nav.academic, href: route('settings.index', { tab: 'academic' }), active: route().current('settings.*') && route().params.tab === 'academic', show: true },
+        { name: t.value.nav.application, href: route('settings.index', { tab: 'app' }), active: route().current('settings.*') && route().params.tab === 'app', show: true },
+      ]
+    },
+  ];
+
+  return items
+    .filter(item => item.show)
+    .map(item => {
+      if (item.children) {
+        item.children = item.children.filter(child => child.show);
+      }
+      return item;
+    });
+});
 </script>
 
 <template>

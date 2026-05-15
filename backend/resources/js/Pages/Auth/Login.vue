@@ -27,7 +27,7 @@ const submit = () => {
 </script>
 
 <template>
-  <Head title="Sign In" />
+  <Head title="Masuk" />
 
   <div class="min-h-screen flex bg-[#F8FAFC]">
     <!-- Left: Login Form -->
@@ -41,15 +41,15 @@ const submit = () => {
         </div>
 
         <div>
-          <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Welcome back!</h2>
-          <p class="mt-3 text-slate-500 font-medium">Please sign in to access your school dashboard.</p>
+          <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Selamat Datang Kembali!</h2>
+          <p class="mt-3 text-slate-500 font-medium">Silakan masuk untuk mengakses dasbor sekolah Anda.</p>
         </div>
 
         <div class="mt-10">
           <form @submit.prevent="submit" class="space-y-6">
             <!-- Email -->
             <div class="space-y-2">
-              <label for="email" class="text-sm font-semibold text-slate-700 ml-1">Email Address</label>
+              <label for="email" class="text-sm font-semibold text-slate-700 ml-1">Alamat Email</label>
               <div class="relative group">
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-indigo-500 transition-colors">
                   <Mail :size="20" />
@@ -69,8 +69,8 @@ const submit = () => {
             <!-- Password -->
             <div class="space-y-2">
               <div class="flex items-center justify-between ml-1">
-                <label for="password" class="text-sm font-semibold text-slate-700">Password</label>
-                <a href="#" class="text-xs font-bold text-indigo-600 hover:text-indigo-700">Forgot password?</a>
+                <label for="password" class="text-sm font-semibold text-slate-700">Kata Sandi</label>
+                <a href="#" class="text-xs font-bold text-indigo-600 hover:text-indigo-700">Lupa kata sandi?</a>
               </div>
               <div class="relative group">
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-indigo-500 transition-colors">
@@ -104,7 +104,7 @@ const submit = () => {
                 class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-slate-300 rounded-lg cursor-pointer"
               />
               <label for="remember" class="ml-3 block text-sm font-semibold text-slate-600 cursor-pointer">
-                Keep me signed in
+                Tetap masuk
               </label>
             </div>
 
@@ -116,18 +116,18 @@ const submit = () => {
             >
               <template v-if="form.processing">
                 <Loader2 class="animate-spin" :size="20" />
-                <span>Verifying...</span>
+                <span>Memverifikasi...</span>
               </template>
               <template v-else>
-                <span>Sign In to Dashboard</span>
+                <span>Masuk ke Dasbor</span>
                 <ArrowRight :size="18" />
               </template>
             </button>
           </form>
 
           <p class="mt-10 text-center text-sm text-slate-500">
-            Not an administrator? 
-            <a href="#" class="font-bold text-indigo-600 hover:text-indigo-700">Contact Support</a>
+            Bukan administrator? 
+            <a href="#" class="font-bold text-indigo-600 hover:text-indigo-700">Hubungi Dukungan</a>
           </p>
         </div>
       </div>
@@ -146,12 +146,12 @@ const submit = () => {
         <div class="space-y-8">
             
             <h1 class="text-5xl xl:text-6xl font-bold text-white leading-tight">
-                The most advanced <br/>
-                <span class="text-indigo-200">School Management</span> <br/>
-                platform.
+                Platform <br/>
+                <span class="text-indigo-200">Manajemen Sekolah</span> <br/>
+                tercanggih.
             </h1>
             <p class="text-lg text-indigo-100 max-w-xl leading-relaxed">
-                Empowering education through data-driven decisions. Manage students, teachers, and curriculum with unprecedented ease and beauty.
+                Memberdayakan pendidikan melalui keputusan berbasis data. Kelola siswa, guru, dan kurikulum dengan kemudahan dan keindahan yang belum pernah ada sebelumnya.
             </p>
             
             <!-- Floating Card UI Mockup -->
@@ -160,9 +160,9 @@ const submit = () => {
         
         <div class="absolute bottom-12 left-12 xl:left-24">
             <div class="flex items-center gap-4 text-white/60 text-sm font-medium">
-                <span>Terms of Service</span>
+                <span>Ketentuan Layanan</span>
                 <span class="w-1 h-1 bg-white/30 rounded-full"></span>
-                <span>Privacy Policy</span>
+                <span>Kebijakan Privasi</span>
             </div>
         </div>
       </div>

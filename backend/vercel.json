@@ -13,6 +13,7 @@
         }
     ],
     "env": {
+        "APP_KEY":"base64:o0leHGbXDtGxI4vLndwIMKJPWWF+fH7pq1hSHKuDQ6c=",
         "APP_ENV": "production",
         "APP_DEBUG": "true",
         "APP_URL": "https://edusmartpro.vercel.app",

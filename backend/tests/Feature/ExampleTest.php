@@ -14,6 +14,13 @@ class ExampleTest extends TestCase
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
+        // Root redirects to login for guests, to dashboard for authenticated
+        $response->assertRedirect('/login');
+    }
+
+    public function test_dashboard_requires_auth(): void
+    {
+        $response = $this->get('/dashboard');
+        $response->assertRedirect('/login');
     }
 }

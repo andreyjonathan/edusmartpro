@@ -4,7 +4,6 @@ import Card from '@/Components/ui/Card.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import { Search, Plus, BookOpen, Pencil, Trash2, GraduationCap, User, Filter } from 'lucide-vue-next';
-import { ref, watch } from 'vue';
 import debounce from 'lodash/debounce';
 
 const props = defineProps({

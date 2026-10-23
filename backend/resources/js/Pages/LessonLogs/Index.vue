@@ -2,7 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Card from '@/Components/ui/Card.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { Search, Plus, BookOpen, Pencil, Trash2, Calendar, User, Chalkboard } from 'lucide-vue-next';
+import { Search, Plus, BookOpen, Pencil, Trash2, Calendar, User, School } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 import debounce from 'lodash/debounce';
 

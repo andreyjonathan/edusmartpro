@@ -40,5 +40,12 @@ Route::middleware('auth')->group(function () {
         Route::resource('payments', \App\Http\Controllers\PaymentController::class);
     });
 
+    // Academic routes (Admin & Teacher)
+    Route::middleware('role:admin|teacher')->group(function () {
+        Route::resource('academic-years', \App\Http\Controllers\AcademicYearController::class);
+        Route::resource('grades', \App\Http\Controllers\GradeController::class);
+        Route::resource('lesson-logs', \App\Http\Controllers\LessonLogController::class);
+    });
+
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
 });

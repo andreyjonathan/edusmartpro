@@ -47,5 +47,14 @@ Route::middleware('auth')->group(function () {
         Route::resource('lesson-logs', \App\Http\Controllers\LessonLogController::class);
     });
 
+    // Teacher Portal Dashboard
+    Route::middleware('role:teacher')->prefix('teacher')->name('teacher.')->group(function () {
+        Route::get('/dashboard', [\App\Http\Controllers\Teacher\TeacherDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/schedule/today', [\App\Http\Controllers\Teacher\TeacherDashboardController::class, 'todaySchedule'])->name('schedule.today');
+        Route::post('/attendance', [\App\Http\Controllers\Teacher\TeacherDashboardController::class, 'storeAttendance'])->name('attendance.store');
+        Route::post('/grades', [\App\Http\Controllers\Teacher\TeacherDashboardController::class, 'storeGrade'])->name('grades.store');
+        Route::get('/announcements', [\App\Http\Controllers\Teacher\TeacherDashboardController::class, 'announcements'])->name('announcements');
+    });
+
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
 });

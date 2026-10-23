@@ -4,6 +4,7 @@ import Card from '@/Components/ui/Card.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { ChevronLeft, GraduationCap, Check, Loader2, Calculator } from 'lucide-vue-next';
 import { useForm } from '@inertiajs/vue3';
+import { ref, watch } from 'vue';
 
 const props = defineProps({
   students: Array,
